@@ -1,0 +1,41 @@
+name: Atualizar projetos da Discloud
+
+on:
+  schedule:
+    - cron: '17 * * * *'   # a cada hora (horário UTC)
+  workflow_dispatch:        # botão "Run workflow" para rodar na hora
+
+permissions:
+  contents: write           # para poder salvar o projetos.json no repositório
+
+concurrency:
+  group: discloud
+  cancel-in-progress: true
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Buscar apps na Discloud
+        env:
+          DISCLOUD_TOKEN: ${{ secrets.DISCLOUD_TOKEN }}
+        run: node scripts/discloud.mjs
+
+      - name: Salvar se mudou
+        run: |
+          # Compara sem a data, para não criar commit toda hora à toa
+          if git diff --quiet -I '"atualizadoEm"' -- projetos.json && git ls-files --error-unmatch projetos.json >/dev/null 2>&1; then
+            echo "Nada mudou."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add projetos.json
+          git commit -m "Atualiza projetos.json (Discloud)"
+          git push

@@ -319,6 +319,14 @@
   .repo h3{font-family:var(--mono); font-size:14px; font-weight:600; word-break:break-word;}
   .repo p{color:var(--muted); font-size:13.5px; flex:1;}
   .repo .meta{display:flex; gap:14px; font-family:var(--mono); font-size:12px; color:var(--dim); flex-wrap:wrap;}
+  .apps{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px;}
+  .app{display:flex; align-items:center; gap:12px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .app .dot{width:9px; height:9px; border-radius:50%; flex:none; border:1.5px solid var(--dim);}
+  .app.on .dot{background:var(--text); border-color:var(--text); animation:pulse 1.8s infinite;}
+  .app b{font-family:var(--mono); font-size:13.5px; font-weight:600; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .app small{font-family:var(--mono); font-size:11.5px; color:var(--dim); white-space:nowrap;}
+  @media (max-width:900px){ .apps{grid-template-columns:repeat(2, minmax(0,1fr));} }
+  @media (max-width:600px){ .apps{grid-template-columns:1fr;} }
   .progress{position:fixed; top:0; left:0; height:2px; width:100%; background:var(--text); transform-origin:0 50%; transform:scaleX(0); z-index:100; pointer-events:none;}
   @media (max-width:900px){ .repos{grid-template-columns:repeat(2, minmax(0,1fr));} }
   @media (max-width:600px){ .repos{grid-template-columns:1fr;} }
@@ -478,6 +486,15 @@
       <div class="step"><small>etapa 3</small><h3>Deploy</h3><p>Projeto publicado em hospedagem estável, com logs e reinício automático.</p></div>
       <div class="step"><small>etapa 4</small><h3>Suporte</h3><p>Ajustes, novos comandos e correções depois da entrega.</p></div>
     </div>
+  </section>
+
+  <section id="nuvem" class="block wrap" hidden>
+    <div class="head reveal in">
+      <span class="kicker">discloud</span>
+      <h2>Bots no ar agora</h2>
+      <p class="lead">Status dos meus apps hospedados na Discloud, atualizado de hora em hora. <span id="nuvem-hora"></span></p>
+    </div>
+    <div class="apps" id="apps"></div>
   </section>
 
   <section id="github" class="block wrap" hidden>
@@ -755,6 +772,33 @@
   window.addEventListener('scroll', updateProgress, { passive: true });
   window.addEventListener('resize', updateProgress);
   updateProgress();
+
+  /* ---- Apps da Discloud (lê projetos.json, gerado pela GitHub Action; nenhum token aqui) ---- */
+  (function(){
+    var sec = document.getElementById('nuvem');
+    var box = document.getElementById('apps');
+    if (!sec || !box || !window.fetch) return;
+    fetch('projetos.json', { cache: 'no-store' })
+      .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(d){
+        var list = (d && d.apps) || [];
+        if (!list.length) return;
+        list.forEach(function(a){
+          var el = document.createElement('div'); el.className = 'app' + (a.online ? ' on' : '');
+          var dot = document.createElement('span'); dot.className = 'dot';
+          var b = document.createElement('b'); b.textContent = a.nome;
+          var sm = document.createElement('small');
+          sm.textContent = (a.online ? 'online' : 'offline') + (a.linguagem ? ' · ' + a.linguagem : '');
+          el.appendChild(dot); el.appendChild(b); el.appendChild(sm); box.appendChild(el);
+        });
+        if (d.atualizadoEm){
+          document.getElementById('nuvem-hora').textContent = 'Última checagem: ' +
+            new Date(d.atualizadoEm).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + '.';
+        }
+        sec.hidden = false;
+      })
+      .catch(function(){ /* sem arquivo ainda: a seção fica escondida */ });
+  })();
 
   /* ---- Repositórios ao vivo (API pública do GitHub) ---- */
   (function(){
