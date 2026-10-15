@@ -1,6 +1,13 @@
 {
-  "atualizadoEm": "2026-10-15T20:21:38.339Z",
+  "atualizadoEm": "2026-10-15T23:42:07.543Z",
   "apps": [
+    {
+      "nome": "Califórnia Country",
+      "online": true,
+      "linguagem": "javascript",
+      "avatar": "https://imgur.com/WA0HaSO.gif",
+      "ligadoDesde": "2026-10-15T20:34:19.719810999Z"
+    },
     {
       "nome": "Departamento de Policia Six - DPS",
       "online": true,
