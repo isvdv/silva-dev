@@ -1,4 +1,40 @@
 {
-  "atualizadoEm": null,
-  "apps": []
+  "atualizadoEm": "2026-10-15T05:57:11.131Z",
+  "apps": [
+    {
+      "nome": "Dallas Roleplay",
+      "online": true,
+      "linguagem": "javascript",
+      "avatar": "https://imgur.com/WA0HaSO.gif",
+      "ligadoDesde": "2026-10-13T21:45:32.563483128Z"
+    },
+    {
+      "nome": "Departamento de Policia Six - DPS",
+      "online": true,
+      "linguagem": "javascript",
+      "avatar": "https://i.ibb.co/4ZBkQkfq/Uma44.png",
+      "ligadoDesde": "2026-08-31T21:18:08.334249767Z"
+    },
+    {
+      "nome": "Safe Studio",
+      "online": true,
+      "linguagem": "javascript",
+      "avatar": "https://imgur.com/C31Wo2x.png",
+      "ligadoDesde": "2026-08-25T00:55:52.727728343Z"
+    },
+    {
+      "nome": "Transfender",
+      "online": true,
+      "linguagem": "javascript",
+      "avatar": "https://i.imgur.com/ZoyKX0s.png",
+      "ligadoDesde": "2026-10-15T00:18:27.747258307Z"
+    },
+    {
+      "nome": "transfender.discloud.app",
+      "online": true,
+      "linguagem": "javascript",
+      "avatar": "https://i.ibb.co/27cLsStw/Uma91.png",
+      "ligadoDesde": "2026-10-14T19:20:02.072569709Z"
+    }
+  ]
 }
