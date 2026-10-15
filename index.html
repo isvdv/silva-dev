@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seu Nome | Desenvolvedor de Bots Discord</title>
+<meta name="description" content="Portfólio de desenvolvedor focado em bots para Discord: moderação, tickets, economia e integrações.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --panel:#121212;
+    --panel-2:#191919;
+    --line:#2c2c2c;
+    --line-soft:#1c1c1c;
+    --text:#f5f5f5;
+    --muted:#a3a3a3;
+    --dim:#7a7a7a;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --body:'Inter', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; scroll-padding-top:90px;}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:var(--body); line-height:1.5;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  ::selection{background:#f5f5f5; color:#0a0a0a;}
+  a{color:inherit; text-decoration:none;}
+  button{font:inherit; color:inherit; background:none; border:0; cursor:pointer;}
+  :focus-visible{outline:2px solid var(--text); outline-offset:3px; border-radius:6px;}
+
+  /* Largura: .wrap cuida SÓ do lado (padding-inline). O espaço vertical de cada
+     bloco vem de padding-block, então as duas coisas nunca se sobrescrevem. */
+  .wrap{max-width:1080px; margin-inline:auto; padding-inline:24px;}
+  .block{padding-block:clamp(52px, 7vw, 76px);}
+
+  body::before{
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:56px 56px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 55% at 50% 0%, #000 15%, transparent 70%);
+            mask-image:radial-gradient(ellipse 80% 55% at 50% 0%, #000 15%, transparent 70%);
+  }
+
+  /* ---------- NAV (vidro) ---------- */
+  .nav{
+    position:fixed; top:16px; left:50%; transform:translateX(-50%);
+    width:min(92%, 720px); z-index:50;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:8px 8px 8px 20px; border-radius:999px;
+    background:rgba(24,24,24,.55);
+    -webkit-backdrop-filter:blur(14px) saturate(1.3);
+            backdrop-filter:blur(14px) saturate(1.3);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.12),
+      inset 0 1px 14px rgba(255,255,255,.05),
+      0 12px 40px rgba(0,0,0,.55);
+  }
+  .brand{font-family:var(--mono); font-weight:600; font-size:14px; display:flex; align-items:center; gap:8px; white-space:nowrap;}
+  .brand i{width:8px; height:8px; border-radius:50%; background:var(--text); animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%,100%{opacity:1; box-shadow:0 0 0 0 rgba(255,255,255,.5);} 50%{opacity:.5; box-shadow:0 0 0 6px rgba(255,255,255,0);}}
+  .links{display:flex; gap:2px;}
+  .links a{
+    font-family:var(--mono); font-size:12.5px; color:var(--muted);
+    padding:8px 13px; border-radius:999px; transition:.2s;
+  }
+  .links a:hover{color:var(--text);}
+  .links a[aria-current="true"]{background:var(--text); color:#0a0a0a; font-weight:600;}
+  .nav-cta{
+    font-family:var(--mono); font-size:12.5px; font-weight:700;
+    padding:9px 16px; border-radius:999px; background:var(--text); color:#0a0a0a;
+    white-space:nowrap; transition:transform .2s;
+  }
+  .nav-cta:hover{transform:scale(1.05);}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative; z-index:1; padding-block:clamp(112px, 14vw, 156px) clamp(64px, 8vw, 88px);}
+  .hero-grid{display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:56px; align-items:center;}
+  .eyebrow{
+    font-family:var(--mono); font-size:12.5px; color:var(--muted);
+    display:inline-flex; align-items:center; gap:8px; margin-bottom:26px;
+    border:1px solid var(--line); border-radius:999px; padding:6px 13px; background:var(--panel);
+  }
+  .eyebrow i{width:6px; height:6px; border-radius:50%; background:var(--text); animation:pulse 1.8s infinite;}
+  h1{
+    font-weight:800; font-size:clamp(38px,5.4vw,66px);
+    line-height:1.04; letter-spacing:-.035em; margin-bottom:22px;
+    perspective:600px;
+  }
+  h1 .line{display:block;}
+  h1 .outline{color:transparent; -webkit-text-stroke:1.6px var(--text);}
+  .word{display:inline-block; white-space:nowrap;}
+  .ch{
+    display:inline-block; opacity:0;
+    animation:land .8s cubic-bezier(.2,.75,.2,1) forwards;
+    animation-delay:calc(var(--i) * 24ms + 120ms);
+  }
+  @keyframes land{
+    from{opacity:0; transform:translate3d(0, calc(var(--dy) * 1px), calc(var(--dz) * 1px)) rotateX(var(--rx));}
+    to{opacity:1; transform:none;}
+  }
+  .hero-sub{color:var(--muted); font-size:17px; max-width:46ch; margin-bottom:30px;}
+  .actions{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:42px;}
+  .btn{
+    font-family:var(--mono); font-size:13.5px; font-weight:600;
+    padding:12px 20px; border-radius:10px; border:1px solid transparent;
+    display:inline-flex; align-items:center; gap:8px; transition:.2s;
+  }
+  .btn-primary{background:var(--text); color:#0a0a0a;}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px -10px rgba(255,255,255,.45);}
+  .btn-ghost{border-color:var(--line); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--muted); background:var(--panel);}
+  .stats{display:flex; gap:34px; flex-wrap:wrap;}
+  .stat b{font-family:var(--mono); font-size:26px; display:block; letter-spacing:-.02em;}
+  .stat span{font-family:var(--mono); font-size:11.5px; color:var(--dim);}
+
+  /* terminal */
+  .term{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    box-shadow:0 30px 70px -30px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.03);
+  }
+  .term-bar{display:flex; align-items:center; gap:7px; padding:12px 16px; border-bottom:1px solid var(--line-soft); background:var(--panel-2);}
+  .term-bar span{width:10px; height:10px; border-radius:50%; background:#3a3a3a;}
+  .term-bar span:nth-of-type(3){background:#f5f5f5;}
+  .term-bar em{margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--dim); font-style:normal;}
+  .term-body{padding:20px; font-family:var(--mono); font-size:13.5px; min-height:262px;}
+  .term-line{color:var(--muted); margin-bottom:12px;}
+  .term-line b{color:var(--text); font-weight:500;}
+  .caret{display:inline-block; width:8px; height:1.05em; background:var(--text); vertical-align:-2px; margin-left:1px; animation:blink 1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .embed{
+    background:var(--panel-2); border-left:3px solid var(--text); border-radius:6px; padding:14px 16px;
+    opacity:0; transform:translateY(8px); transition:opacity .45s, transform .45s;
+  }
+  .embed.show{opacity:1; transform:none;}
+  .embed-top{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+  .avatar{
+    width:32px; height:32px; border-radius:50%; background:var(--text); color:#0a0a0a;
+    display:grid; place-items:center; font-weight:800; font-family:var(--body); font-size:13px;
+  }
+  .embed-name{font-family:var(--body); font-weight:700; font-size:14px; line-height:1.2;}
+  .embed-name small{display:block; font-weight:400; font-family:var(--mono); font-size:10.5px; color:var(--dim);}
+  .embed-title{font-family:var(--body); font-weight:700; font-size:14px; margin-bottom:4px;}
+  .embed-desc{font-family:var(--body); font-size:12.5px; color:var(--muted); line-height:1.5;}
+  .fields{display:flex; gap:22px; margin-top:12px; flex-wrap:wrap;}
+  .fields div{font-size:11.5px;}
+  .fields b{display:block; color:var(--dim); font-weight:500; margin-bottom:1px; font-size:10.5px; letter-spacing:.06em;}
+
+  /* ---------- MARQUEE ---------- */
+  /* Faixa que rola de verdade (overflow-x), então dá para arrastar, usar o trackpad ou o dedo.
+     O movimento automático é feito pelo JS e para quando o mouse está em cima. */
+  .marquee{
+    position:relative; z-index:1; border-block:1px solid var(--line-soft);
+    overflow-x:auto; overflow-y:hidden; padding:18px 0; cursor:grab;
+    scrollbar-width:none; -ms-overflow-style:none; overscroll-behavior-x:contain;
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+            mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  .marquee::-webkit-scrollbar{display:none;}
+  .marquee.dragging{cursor:grabbing; user-select:none;}
+  .track{display:flex; gap:12px; width:max-content;}
+  .tag{
+    font-family:var(--mono); font-size:13px; color:var(--muted); white-space:nowrap;
+    border:1px solid var(--line); border-radius:999px; padding:7px 16px; background:var(--panel);
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section{position:relative; z-index:1;}
+  .head{margin-bottom:36px;}
+  .kicker{font-family:var(--mono); font-size:12.5px; color:var(--dim); display:block; margin-bottom:10px;}
+  .kicker::before{content:'// ';}
+  h2{font-size:clamp(26px,3.4vw,38px); font-weight:800; letter-spacing:-.025em; line-height:1.1;}
+  .lead{color:var(--muted); margin-top:12px; max-width:56ch;}
+
+  .reveal{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:none;}
+
+  /* ---------- FILTRO (pílula deslizante) ---------- */
+  .filters{
+    position:relative; display:inline-flex; gap:2px; padding:5px; margin-bottom:26px;
+    border:1px solid var(--line); border-radius:999px; background:var(--panel); max-width:100%; overflow-x:auto;
+  }
+  .filters button{
+    position:relative; z-index:1; font-family:var(--mono); font-size:12.5px; color:var(--muted);
+    padding:9px 16px; border-radius:999px; white-space:nowrap; transition:color .25s;
+  }
+  .filters button:hover{color:var(--text);}
+  .filters button[aria-pressed="true"]{color:#0a0a0a; font-weight:600;}
+  .pill{
+    position:absolute; z-index:0; top:5px; bottom:5px; left:0; width:0;
+    border-radius:999px; background:var(--text);
+    transition:transform .35s cubic-bezier(.3,.8,.3,1), width .35s cubic-bezier(.3,.8,.3,1);
+  }
+
+  /* ---------- PROJETOS ---------- */
+  .grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px;}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:16px; overflow:hidden;
+    display:flex; flex-direction:column; transition:border-color .25s;
+  }
+  .card:hover{border-color:#555;}
+  .card.is-hidden{display:none;}
+  .preview{
+    position:relative; height:224px; margin:12px 12px 0; border-radius:10px; overflow:hidden;
+    background:linear-gradient(#161616, #0e0e0e); border:1px solid var(--line-soft);
+    display:grid; place-items:center;
+    container-type:inline-size;   /* as telas medem em cqw (largura do preview), então sempre cabem */
+  }
+  .preview::after{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 50% 120%, rgba(255,255,255,.07), transparent 60%);
+  }
+  .shot{
+    --x:0cqw; --y:0%; --r:0deg;                 /* posição e giro ficam em variáveis: o hover muda só o que precisa */
+    position:absolute; width:38cqw; height:76%; border-radius:9px; padding:11px;
+    background:#0d0d0d; border:1px solid #333; font-family:var(--mono); font-size:10.5px; color:#bdbdbd;
+    line-height:1.55; overflow:hidden;
+    transform:translate(var(--x), var(--y)) rotate(var(--r));
+    box-shadow:0 14px 30px -8px rgba(0,0,0,.8);
+    transition:transform .4s cubic-bezier(.3,.8,.3,1), filter .3s, box-shadow .3s;
+  }
+  .shot h4{font-size:10px; letter-spacing:.08em; color:var(--dim); font-weight:500; margin-bottom:6px; text-transform:uppercase;}
+  .shot p{margin-bottom:3px;}
+  .shot .ok{color:var(--text);}
+  .shot .bar{height:5px; border-radius:3px; background:#2a2a2a; margin:7px 0; overflow:hidden;}
+  .shot .bar i{display:block; height:100%; background:var(--text);}
+  .shot:nth-child(1){--x:-27cqw; --r:-4deg; filter:grayscale(1) brightness(.55);}
+  .shot:nth-child(2){--y:-2%; z-index:2;}
+  .shot:nth-child(3){--x:27cqw; --r:4deg; filter:grayscale(1) brightness(.55);}
+  .card:hover .shot:nth-child(1){--x:-29cqw; --r:-5deg;}
+  .card:hover .shot:nth-child(3){--x:29cqw; --r:5deg;}
+  /* passar o mouse numa tela traz ela para a frente, mas ela continua no lugar (só sobe e endireita) */
+  .shot:hover{filter:none; z-index:5; --y:-5%; --r:0deg; box-shadow:0 24px 44px -10px rgba(0,0,0,.95), 0 0 0 1px #666;}
+  /* preview estreito (celular, 2 colunas apertadas): telas maiores e mais sobrepostas, para o texto caber */
+  @container (max-width: 420px){
+    .shot{width:50cqw;}
+    .shot:nth-child(1){--x:-21cqw;}
+    .shot:nth-child(3){--x:21cqw;}
+    .card:hover .shot:nth-child(1){--x:-22cqw;}
+    .card:hover .shot:nth-child(3){--x:22cqw;}
+  }
+
+  .card-body{padding:22px 24px 24px; display:flex; flex-direction:column; gap:12px; flex:1;}
+  .card-top{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .card-top h3{font-size:20px; font-weight:700; letter-spacing:-.01em;}
+  .status{
+    margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--muted);
+    border:1px solid var(--line); border-radius:999px; padding:3px 10px;
+  }
+  .card p.desc{color:var(--muted); font-size:14.5px;}
+  .chips{display:flex; flex-wrap:wrap; gap:7px;}
+  .chip{font-family:var(--mono); font-size:12px; border:1px solid var(--line); background:var(--panel-2); padding:5px 10px; border-radius:6px;}
+  .link{font-family:var(--mono); font-size:13px; margin-top:auto; padding-top:4px; display:inline-flex; gap:6px; width:max-content; border-bottom:1px solid transparent; transition:.2s;}
+  .link:hover{border-color:var(--text);}
+
+  /* ---------- SKILLS ---------- */
+  .skills{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px;}
+  .skill{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:22px; transition:border-color .25s;}
+  .skill:hover{border-color:#555;}
+  .skill h3{font-family:var(--mono); font-size:13px; font-weight:500; color:var(--muted); margin-bottom:14px;}
+  .skill h3::before{content:'$ '; color:var(--dim);}
+
+  /* ---------- PROCESSO ---------- */
+  .steps{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--panel);}
+  .step{padding:26px 22px; border-right:1px solid var(--line-soft); transition:background .25s;}
+  .step:last-child{border-right:0;}
+  .step:hover{background:var(--panel-2);}
+  .step small{font-family:var(--mono); font-size:11.5px; color:var(--dim);}
+  .step h3{font-size:17px; font-weight:700; margin:10px 0 8px;}
+  .step p{font-size:13.5px; color:var(--muted);}
+
+  /* ---------- CONTATO ---------- */
+  .contact{
+    background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:56px 32px; text-align:center;
+    background-image:radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.06), transparent 65%);
+  }
+  .contact h2{margin-bottom:12px;}
+  .contact .kicker{text-align:center;}
+  .contact .lead{margin:0 auto 28px;}
+  .row{display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
+  .copy.ok{background:var(--text); color:#0a0a0a;}
+
+  /* ---------- RODAPÉ ---------- */
+  footer{position:relative; z-index:1; border-top:1px solid var(--line-soft); font-family:var(--mono); font-size:12.5px; color:var(--dim);}
+  .foot{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; padding-block:28px 40px;}
+
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr;}
+    .grid, .skills{grid-template-columns:1fr;}
+    .steps{grid-template-columns:repeat(2, minmax(0,1fr));}
+    .step:nth-child(2){border-right:0;}
+    .step:nth-child(-n+2){border-bottom:1px solid var(--line-soft);}
+    .links{display:none;}
+    .nav{padding-left:18px;}
+  }
+  @media (max-width:480px){
+    .steps{grid-template-columns:1fr;}
+    .step{border-right:0; border-bottom:1px solid var(--line-soft);}
+    .step:last-child{border-bottom:0;}
+    .contact{padding:40px 20px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .ch{opacity:1; animation:none;}
+    .reveal{opacity:1; transform:none; transition:none;}
+    .brand i, .eyebrow i, .caret{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Principal">
+  <a class="brand" href="#topo"><i></i>~/seunome-dev</a>
+  <div class="links">
+    <a href="#projetos">projetos</a>
+    <a href="#stack">stack</a>
+    <a href="#processo">processo</a>
+    <a href="#contato">contato</a>
+  </div>
+  <a class="nav-cta" href="#contato">Falar comigo</a>
+</nav>
+
+<main id="topo">
+  <header class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow"><i></i>disponível para novos projetos</span>
+        <h1>
+          <span class="line split">Bots que</span>
+          <span class="line split outline">rodam 24/7</span>
+          <span class="line split">no seu servidor.</span>
+        </h1>
+        <p class="hero-sub">Desenvolvo bots para Discord: moderação automática, tickets, economia e integrações, com painel web para configurar tudo sem mexer em código.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#projetos">Ver projetos →</a>
+          <a class="btn btn-ghost" href="https://github.com/">GitHub ↗</a>
+        </div>
+        <div class="stats">
+          <div class="stat"><b data-count="12" data-suffix="+">12+</b><span>servidores atendidos</span></div>
+          <div class="stat"><b data-count="40" data-suffix="+">40+</b><span>comandos criados</span></div>
+          <div class="stat"><b data-count="99.9" data-suffix="%" data-dec="1">99.9%</b><span>uptime médio</span></div>
+        </div>
+      </div>
+
+      <div class="term" role="img" aria-label="Demonstração de comandos de um bot no Discord">
+        <div class="term-bar"><span></span><span></span><span></span><em>discord · #comandos</em></div>
+        <div class="term-body">
+          <div class="term-line"><b>você</b> <span id="typed"></span><span class="caret"></span></div>
+          <div class="embed" id="embed"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="marquee" id="marquee" aria-hidden="true">
+    <div class="track" id="track"></div>
+  </div>
+
+  <section id="projetos" class="block wrap">
+    <div class="head reveal">
+      <span class="kicker">projetos</span>
+      <h2>Bots em produção</h2>
+      <p class="lead">Passe o mouse nos cards para abrir as telas de cada bot. Exemplos fictícios: troque pelos seus.</p>
+    </div>
+
+    <div class="filters reveal" id="filters" role="group" aria-label="Filtrar projetos">
+      <span class="pill" id="pill"></span>
+      <button type="button" data-f="all" aria-pressed="true">Todos</button>
+      <button type="button" data-f="mod" aria-pressed="false">Moderação</button>
+      <button type="button" data-f="eco" aria-pressed="false">Economia</button>
+      <button type="button" data-f="util" aria-pressed="false">Utilidades</button>
+    </div>
+
+    <div class="grid" id="grid">
+
+      <article class="card reveal" data-cat="mod">
+        <div class="preview">
+          <div class="shot"><h4>log</h4><p>ban · @spam123</p><p>mute · @flood</p><p class="ok">✓ 14 ações hoje</p></div>
+          <div class="shot"><h4>/automod</h4><p>filtro de links <span class="ok">on</span></p><p>anti-raid <span class="ok">on</span></p><div class="bar"><i style="width:82%"></i></div><p>sensibilidade 82%</p></div>
+          <div class="shot"><h4>/warn</h4><p>@user recebeu</p><p>aviso 2/3</p><p class="ok">punição auto em 1</p></div>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><h3>ModeraBot</h3><span class="status">● em produção</span></div>
+          <p class="desc">Auto-mod, avisos com punição progressiva, logs por canal e dashboard web para ajustar as regras sem editar código.</p>
+          <div class="chips"><span class="chip">discord.js</span><span class="chip">MongoDB</span><span class="chip">Dashboard</span></div>
+          <a class="link" href="#">ver repositório ↗</a>
+        </div>
+      </article>
+
+      <article class="card reveal" data-cat="util">
+        <div class="preview">
+          <div class="shot"><h4>fila</h4><p>#0139 aberto</p><p>#0140 em andamento</p><p class="ok">#0141 fechado</p></div>
+          <div class="shot"><h4>/ticket abrir</h4><p>categoria: suporte</p><p>equipe notificada</p><div class="bar"><i style="width:60%"></i></div><p>resposta média 4 min</p></div>
+          <div class="shot"><h4>transcript</h4><p>conversa salva</p><p>gerado em PDF</p><p class="ok">enviado ao usuário</p></div>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><h3>TicketFlow</h3><span class="status">● em produção</span></div>
+          <p class="desc">Tickets de suporte com categorias, atribuição de equipe, transcript em PDF e painel administrativo integrado.</p>
+          <div class="chips"><span class="chip">discord.py</span><span class="chip">PostgreSQL</span><span class="chip">FastAPI</span></div>
+          <a class="link" href="#">ver repositório ↗</a>
+        </div>
+      </article>
+
+      <article class="card reveal" data-cat="eco">
+        <div class="preview">
+          <div class="shot"><h4>ranking</h4><p>1. @lia · 9.4k</p><p>2. @duda · 7.1k</p><p class="ok">3. @theo · 6.8k</p></div>
+          <div class="shot"><h4>/loja</h4><p>espada de ferro · 250</p><p>poção · 40</p><div class="bar"><i style="width:35%"></i></div><p>saldo: 1.280 moedas</p></div>
+          <div class="shot"><h4>/inventario</h4><p>espada x1</p><p>poção x6</p><p class="ok">nível 12</p></div>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><h3>EconomyRPG</h3><span class="status">● beta</span></div>
+          <p class="desc">Economia e RPG com inventário, loja de itens, ranking global entre servidores e comandos configuráveis por guild.</p>
+          <div class="chips"><span class="chip">Node.js</span><span class="chip">Redis</span><span class="chip">Slash Commands</span></div>
+          <a class="link" href="#">ver repositório ↗</a>
+        </div>
+      </article>
+
+      <article class="card reveal" data-cat="util">
+        <div class="preview">
+          <div class="shot"><h4>fila</h4><p>1. lo-fi beats</p><p>2. synthwave mix</p><p class="ok">3. jazz noturno</p></div>
+          <div class="shot"><h4>/tocar</h4><p>tocando agora</p><div class="bar"><i style="width:48%"></i></div><p>01:52 / 03:54</p><p class="ok">volume 70%</p></div>
+          <div class="shot"><h4>/playlist</h4><p>salva: estudo</p><p>24 faixas</p><p class="ok">compartilhada</p></div>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><h3>MusicWave</h3><span class="status">● beta</span></div>
+          <p class="desc">Player de música com fila, playlists salvas por servidor e controles por botões direto na mensagem.</p>
+          <div class="chips"><span class="chip">TypeScript</span><span class="chip">Lavalink</span><span class="chip">Docker</span></div>
+          <a class="link" href="#">ver repositório ↗</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="stack" class="block wrap">
+    <div class="head reveal">
+      <span class="kicker">stack</span>
+      <h2>Do slash command ao deploy</h2>
+      <p class="lead">Linguagens, bibliotecas de bot, backend e infraestrutura que uso no dia a dia.</p>
+    </div>
+    <div class="skills">
+      <div class="skill reveal"><h3>linguagens</h3><div class="chips"><span class="chip">JavaScript</span><span class="chip">TypeScript</span><span class="chip">Python</span><span class="chip">SQL</span></div></div>
+      <div class="skill reveal"><h3>discord</h3><div class="chips"><span class="chip">discord.js</span><span class="chip">discord.py</span><span class="chip">Slash Commands</span><span class="chip">Interactions API</span><span class="chip">Webhooks</span></div></div>
+      <div class="skill reveal"><h3>backend</h3><div class="chips"><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">MongoDB</span><span class="chip">PostgreSQL</span><span class="chip">Redis</span><span class="chip">REST API</span></div></div>
+      <div class="skill reveal"><h3>infra</h3><div class="chips"><span class="chip">Docker</span><span class="chip">Git</span><span class="chip">VPS / Railway</span><span class="chip">PM2</span><span class="chip">CI/CD</span></div></div>
+    </div>
+  </section>
+
+  <section id="processo" class="block wrap">
+    <div class="head reveal">
+      <span class="kicker">processo</span>
+      <h2>Como um bot sai do papel</h2>
+      <p class="lead">Quatro etapas, sempre nessa ordem.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step"><small>etapa 1</small><h3>Briefing</h3><p>Conversamos sobre o servidor, o que o bot precisa fazer e quem vai usar.</p></div>
+      <div class="step"><small>etapa 2</small><h3>Desenvolvimento</h3><p>Comandos e banco de dados criados, com testes num servidor separado.</p></div>
+      <div class="step"><small>etapa 3</small><h3>Deploy</h3><p>Bot publicado em hospedagem estável, com logs e reinício automático.</p></div>
+      <div class="step"><small>etapa 4</small><h3>Suporte</h3><p>Ajustes, novos comandos e correções depois da entrega.</p></div>
+    </div>
+  </section>
+
+  <section id="contato" class="block wrap">
+    <div class="contact reveal">
+      <span class="kicker">contato</span>
+      <h2>Precisa de um bot para sua comunidade?</h2>
+      <p class="lead">Aberto a freelas, parcerias e oportunidades. Me chame no Discord ou mande um e-mail.</p>
+      <div class="row">
+        <a class="btn btn-primary" href="mailto:seuemail@exemplo.com">Enviar e-mail</a>
+        <button class="btn btn-ghost copy" type="button" id="copy" data-text="seunick">Copiar Discord: seunick</button>
+        <a class="btn btn-ghost" href="https://github.com/">GitHub ↗</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Seu Nome</span>
+    <span>github.com/seunome</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- Título: letras que se montam ---- */
+  var n = 0;
+  document.querySelectorAll('.split').forEach(function(el){
+    var text = el.textContent;
+    el.setAttribute('aria-label', text);
+    el.textContent = '';
+    text.split(' ').forEach(function(w, wi, arr){
+      var word = document.createElement('span');
+      word.className = 'word';
+      word.setAttribute('aria-hidden', 'true');
+      w.split('').forEach(function(c){
+        var s = document.createElement('span');
+        s.className = 'ch';
+        s.textContent = c;
+        var sign = (n % 2 === 0) ? 1 : -1;
+        s.style.setProperty('--i', n);
+        s.style.setProperty('--dy', sign * (18 + (n * 7) % 34));
+        s.style.setProperty('--dz', (n * 11) % 60);
+        s.style.setProperty('--rx', sign * (20 + (n * 5) % 40) + 'deg');
+        word.appendChild(s);
+        n++;
+      });
+      el.appendChild(word);
+      if (wi < arr.length - 1) el.appendChild(document.createTextNode(' '));
+    });
+  });
+
+  /* ---- Terminal: alterna comandos ---- */
+  var scenes = [
+    { cmd: '/ping', title: 'Pong!', desc: 'O bot está online e respondendo.', fields: [['LATÊNCIA','38ms'],['UPTIME','99.9%'],['VERSÃO','v2.4.0']] },
+    { cmd: '/ban @spammer spam', title: 'Usuário banido', desc: 'A ação foi registrada no canal de logs.', fields: [['MOTIVO','spam'],['MODERADOR','você'],['LOG','#mod-logs']] },
+    { cmd: '/ticket abrir', title: 'Ticket #0142 criado', desc: 'A equipe de suporte foi avisada.', fields: [['CATEGORIA','suporte'],['PRIORIDADE','normal'],['RESPOSTA','~4 min']] }
+  ];
+  var typed = document.getElementById('typed');
+  var embed = document.getElementById('embed');
+  var si = 0;
+
+  function renderEmbed(s){
+    embed.innerHTML = '';
+    var top = document.createElement('div'); top.className = 'embed-top';
+    var av = document.createElement('div'); av.className = 'avatar'; av.textContent = 'SN';
+    var nm = document.createElement('div'); nm.className = 'embed-name';
+    nm.textContent = 'SeuBot';
+    var sm = document.createElement('small'); sm.textContent = 'aplicativo · bot';
+    nm.appendChild(sm); top.appendChild(av); top.appendChild(nm);
+    var t = document.createElement('div'); t.className = 'embed-title'; t.textContent = s.title;
+    var d = document.createElement('div'); d.className = 'embed-desc'; d.textContent = s.desc;
+    var f = document.createElement('div'); f.className = 'fields';
+    s.fields.forEach(function(x){
+      var box = document.createElement('div');
+      var b = document.createElement('b'); b.textContent = x[0];
+      box.appendChild(b); box.appendChild(document.createTextNode(x[1]));
+      f.appendChild(box);
+    });
+    embed.appendChild(top); embed.appendChild(t); embed.appendChild(d); embed.appendChild(f);
+  }
+
+  function play(){
+    var s = scenes[si % scenes.length]; si++;
+    embed.classList.remove('show');
+    typed.textContent = '';
+    var i = 0;
+    (function tick(){
+      if (i <= s.cmd.length){
+        typed.textContent = s.cmd.slice(0, i++);
+        setTimeout(tick, 60);
+      } else {
+        setTimeout(function(){
+          renderEmbed(s);
+          embed.classList.add('show');
+          setTimeout(play, 3200);
+        }, 250);
+      }
+    })();
+  }
+  if (reduce){
+    typed.textContent = scenes[0].cmd; renderEmbed(scenes[0]); embed.classList.add('show');
+  } else { play(); }
+
+  /* ---- Faixa de tecnologias ---- */
+  var techs = ['discord.js','discord.py','TypeScript','Node.js','Python','MongoDB','PostgreSQL','Redis','Docker','FastAPI','Slash Commands','Webhooks'];
+  var marquee = document.getElementById('marquee');
+  var track = document.getElementById('track');
+  var COPIES = 4;                       // cópias da lista, para o loop nunca mostrar um buraco
+  for (var c = 0; c < COPIES; c++){
+    techs.forEach(function(t){
+      var s = document.createElement('span'); s.className = 'tag'; s.textContent = t; track.appendChild(s);
+    });
+  }
+
+  var loop = 0;                         // distância de uma cópia inteira (onde o loop "emenda")
+  function measure(){
+    var first = track.children[0], second = track.children[techs.length];
+    loop = second.offsetLeft - first.offsetLeft;
+  }
+  measure();
+
+  var pos = 40;                         // posição em número decimal (scrollLeft pode arredondar)
+  var SPEED = 55;                       // pixels por segundo
+  var hovering = false, dragging = false, userUntil = 0, last = null;
+  marquee.scrollLeft = pos;
+
+  function keepInRange(){
+    var x = marquee.scrollLeft;
+    if (x >= loop){ marquee.scrollLeft = x - loop; pos = marquee.scrollLeft; }
+    else if (x <= 1){ marquee.scrollLeft = x + loop; pos = marquee.scrollLeft; }
+  }
+  // Rolagem feita pela pessoa (trackpad, toque, arrastar): acompanha e segura o automático por um instante
+  marquee.addEventListener('scroll', function(){
+    if (Math.abs(marquee.scrollLeft - pos) > 1.5){
+      pos = marquee.scrollLeft;
+      userUntil = performance.now() + 1600;
+      keepInRange();
+    }
+  }, { passive: true });
+  marquee.addEventListener('mouseenter', function(){ hovering = true; });
+  marquee.addEventListener('mouseleave', function(){ hovering = false; });
+  marquee.addEventListener('touchstart', function(){ userUntil = performance.now() + 3000; }, { passive: true });
+
+  // Arrastar com o mouse
+  var startX = 0, startScroll = 0;
+  marquee.addEventListener('pointerdown', function(e){
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    dragging = true; startX = e.clientX; startScroll = marquee.scrollLeft;
+    marquee.classList.add('dragging');
+    try { marquee.setPointerCapture(e.pointerId); } catch(err){}
+  });
+  marquee.addEventListener('pointermove', function(e){
+    if (!dragging) return;
+    marquee.scrollLeft = startScroll - (e.clientX - startX);
+  });
+  function endDrag(){ dragging = false; marquee.classList.remove('dragging'); userUntil = performance.now() + 900; }
+  marquee.addEventListener('pointerup', endDrag);
+  marquee.addEventListener('pointercancel', endDrag);
+
+  // Movimento automático. Anda mesmo com "reduzir movimento" ligado no sistema (a pedido),
+  // mas é lento, para ao passar o mouse e dá para arrastar.
+  function frame(t){
+    if (last === null) last = t;
+    var dt = Math.min((t - last) / 1000, .1); last = t;
+    if (!hovering && !dragging && t >= userUntil && !document.hidden){
+      pos += SPEED * dt;
+      if (pos >= loop) pos -= loop;
+      marquee.scrollLeft = pos;
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  window.addEventListener('resize', measure);
+  if (document.fonts && document.fonts.ready){ document.fonts.ready.then(measure); }
+
+  /* ---- Contadores (o texto final já está no HTML; a animação só parte do zero) ---- */
+  function countUp(el){
+    if (reduce) return;
+    var end = parseFloat(el.dataset.count), dec = parseInt(el.dataset.dec || '0', 10), suf = el.dataset.suffix || '';
+    var t0 = null, dur = 1400;
+    function step(t){
+      if (!t0) t0 = t;
+      var p = Math.min((t - t0) / dur, 1), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = (end * e).toFixed(dec) + suf;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  document.querySelectorAll('[data-count]').forEach(countUp);
+
+  /* ---- Revelar ao rolar ---- */
+  var revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduce){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: .12 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else { revealEls.forEach(function(el){ el.classList.add('in'); }); }
+
+  /* ---- Filtro com pílula deslizante ---- */
+  var filters = document.getElementById('filters');
+  var pill = document.getElementById('pill');
+  var btns = filters.querySelectorAll('button');
+  var cards = document.querySelectorAll('#grid .card');
+
+  function movePill(btn){
+    pill.style.width = btn.offsetWidth + 'px';
+    pill.style.transform = 'translateX(' + btn.offsetLeft + 'px)';
+  }
+  function active(){ return filters.querySelector('[aria-pressed="true"]'); }
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      btns.forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      movePill(b);
+      var f = b.dataset.f;
+      cards.forEach(function(c){ c.classList.toggle('is-hidden', f !== 'all' && c.dataset.cat !== f); });
+    });
+  });
+  pill.style.transition = 'none';
+  movePill(active());
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ pill.style.transition = ''; }); });
+  window.addEventListener('resize', function(){ movePill(active()); });
+  if (document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ movePill(active()); }); }
+
+  /* ---- Menu: seção atual ---- */
+  var links = document.querySelectorAll('.links a');
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  if ('IntersectionObserver' in window){
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){
+          links.forEach(function(a){ a.removeAttribute('aria-current'); });
+          var a = map[e.target.id]; if (a) a.setAttribute('aria-current', 'true');
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    Object.keys(map).forEach(function(id){ var s = document.getElementById(id); if (s) spy.observe(s); });
+  }
+
+  /* ---- Copiar Discord ---- */
+  var copy = document.getElementById('copy');
+  var original = copy.textContent;
+  copy.addEventListener('click', function(){
+    var txt = copy.dataset.text;
+    function done(){
+      copy.textContent = 'Copiado!'; copy.classList.add('ok');
+      setTimeout(function(){ copy.textContent = original; copy.classList.remove('ok'); }, 1800);
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done, done); }
+      else { done(); }
+    } catch(e){ done(); }
+  });
+})();
+</script>
+</body>
+</html>
