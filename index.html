@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Silva | Desenvolvedor de Bots Discord</title>
+<title>Luiz Paulo | Interfaces web, bots Discord e sistemas RP</title>
 <meta name="description" content="Portfólio de desenvolvedor focado em bots para Discord: moderação, tickets, economia e integrações.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -311,15 +311,29 @@
     .reveal{opacity:1; transform:none; transition:none;}
     .brand i, .eyebrow i, .caret{animation:none;}
   }
+
+  /* ---------- GITHUB (repos ao vivo) + barra de progresso ---------- */
+  .repos{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:16px;}
+  .repo{display:flex; flex-direction:column; gap:10px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px; transition:border-color .25s, transform .25s;}
+  .repo:hover{border-color:#555; transform:translateY(-3px);}
+  .repo h3{font-family:var(--mono); font-size:14px; font-weight:600; word-break:break-word;}
+  .repo p{color:var(--muted); font-size:13.5px; flex:1;}
+  .repo .meta{display:flex; gap:14px; font-family:var(--mono); font-size:12px; color:var(--dim); flex-wrap:wrap;}
+  .progress{position:fixed; top:0; left:0; height:2px; width:100%; background:var(--text); transform-origin:0 50%; transform:scaleX(0); z-index:100; pointer-events:none;}
+  @media (max-width:900px){ .repos{grid-template-columns:repeat(2, minmax(0,1fr));} }
+  @media (max-width:600px){ .repos{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
 
+<div class="progress" id="progress"></div>
+
 <nav class="nav" aria-label="Principal">
-  <a class="brand" href="#topo"><i></i>~/seunome-dev</a>
+  <a class="brand" href="#topo"><i></i>~/luiz-paulo</a>
   <div class="links">
     <a href="#projetos">projetos</a>
     <a href="#stack">stack</a>
+    <a href="#github">github</a>
     <a href="#processo">processo</a>
     <a href="#contato">contato</a>
   </div>
@@ -332,19 +346,19 @@
       <div>
         <span class="eyebrow"><i></i>disponível para novos projetos</span>
         <h1>
-          <span class="line split">Bots que</span>
-          <span class="line split outline">rodam 24/7</span>
-          <span class="line split">no seu servidor.</span>
+          <span class="line split">Sites, bots e</span>
+          <span class="line split outline">sistemas RP</span>
+          <span class="line split">que funcionam.</span>
         </h1>
-        <p class="hero-sub">Desenvolvo bots para Discord: moderação automática, tickets, economia e integrações, com painel web para configurar tudo sem mexer em código.</p>
+        <p class="hero-sub">Sou o Luiz Paulo. Desenvolvo interfaces web, bots Discord e sistemas para comunidades RP: painéis administrativos, login com Discord, whitelist e automações para servidores FiveM/RedM.</p>
         <div class="actions">
           <a class="btn btn-primary" href="#projetos">Ver projetos →</a>
-          <a class="btn btn-ghost" href="https://github.com/">GitHub ↗</a>
+          <a class="btn btn-ghost" href="https://github.com/luizpauloteam-dot">GitHub ↗</a>
         </div>
         <div class="stats">
-          <div class="stat"><b data-count="12" data-suffix="+">12+</b><span>servidores atendidos</span></div>
-          <div class="stat"><b data-count="40" data-suffix="+">40+</b><span>comandos criados</span></div>
-          <div class="stat"><b data-count="99.9" data-suffix="%" data-dec="1">99.9%</b><span>uptime médio</span></div>
+          <div class="stat"><b data-count="7">7</b><span>tecnologias na stack</span></div>
+          <div class="stat"><b data-count="4">4</b><span>projetos em destaque</span></div>
+          <div class="stat"><b data-count="3">3</b><span>frentes: web, bots e RP</span></div>
         </div>
       </div>
 
@@ -365,72 +379,72 @@
   <section id="projetos" class="block wrap">
     <div class="head reveal">
       <span class="kicker">projetos</span>
-      <h2>Bots em produção</h2>
-      <p class="lead">Passe o mouse nos cards para abrir as telas de cada bot. Exemplos fictícios: troque pelos seus.</p>
+      <h2>Projetos em destaque</h2>
+      <p class="lead">Passe o mouse nos cards para abrir as telas de cada projeto.</p>
     </div>
 
     <div class="filters reveal" id="filters" role="group" aria-label="Filtrar projetos">
       <span class="pill" id="pill"></span>
       <button type="button" data-f="all" aria-pressed="true">Todos</button>
-      <button type="button" data-f="mod" aria-pressed="false">Moderação</button>
-      <button type="button" data-f="eco" aria-pressed="false">Economia</button>
-      <button type="button" data-f="util" aria-pressed="false">Utilidades</button>
+      <button type="button" data-f="site" aria-pressed="false">Sites</button>
+      <button type="button" data-f="sis" aria-pressed="false">Sistemas</button>
+      <button type="button" data-f="bot" aria-pressed="false">Bots</button>
     </div>
 
     <div class="grid" id="grid">
 
-      <article class="card reveal" data-cat="mod">
+      <article class="card reveal" data-cat="site">
         <div class="preview">
-          <div class="shot"><h4>log</h4><p>ban · @spam123</p><p>mute · @flood</p><p class="ok">✓ 14 ações hoje</p></div>
-          <div class="shot"><h4>/automod</h4><p>filtro de links <span class="ok">on</span></p><p>anti-raid <span class="ok">on</span></p><div class="bar"><i style="width:82%"></i></div><p>sensibilidade 82%</p></div>
-          <div class="shot"><h4>/warn</h4><p>@user recebeu</p><p>aviso 2/3</p><p class="ok">punição auto em 1</p></div>
+          <div class="shot"><h4>efetivo</h4><p>Cmte. · 1 ativo</p><p>Oficial · 8 ativos</p><p class="ok">Soldado · 21 ativos</p></div>
+          <div class="shot"><h4>/painel</h4><p>login com Discord <span class="ok">ok</span></p><p>cargo: administrador</p><div class="bar"><i style="width:74%"></i></div><p>ocorrências 74%</p></div>
+          <div class="shot"><h4>MDT</h4><p>busca por cidadão</p><p>registro de ocorrência</p><p class="ok">acesso restrito</p></div>
         </div>
         <div class="card-body">
-          <div class="card-top"><h3>ModeraBot</h3><span class="status">● em produção</span></div>
-          <p class="desc">Auto-mod, avisos com punição progressiva, logs por canal e dashboard web para ajustar as regras sem editar código.</p>
-          <div class="chips"><span class="chip">discord.js</span><span class="chip">MongoDB</span><span class="chip">Dashboard</span></div>
+          <div class="card-top"><h3>DPS — Departamento de Polícia</h3><span class="status">● site</span></div>
+          <p class="desc">Site institucional para facção policial de servidor RP, com visual sério, cards de efetivo, painel administrativo e estrutura inspirada em sistemas MDT.</p>
+          <div class="chips"><span class="chip">Next.js</span><span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">MongoDB</span></div>
           <a class="link" href="#">ver repositório ↗</a>
         </div>
       </article>
 
-      <article class="card reveal" data-cat="util">
+      <article class="card reveal" data-cat="sis">
         <div class="preview">
-          <div class="shot"><h4>fila</h4><p>#0139 aberto</p><p>#0140 em andamento</p><p class="ok">#0141 fechado</p></div>
-          <div class="shot"><h4>/ticket abrir</h4><p>categoria: suporte</p><p>equipe notificada</p><div class="bar"><i style="width:60%"></i></div><p>resposta média 4 min</p></div>
-          <div class="shot"><h4>transcript</h4><p>conversa salva</p><p>gerado em PDF</p><p class="ok">enviado ao usuário</p></div>
+          <div class="shot"><h4>fila</h4><p>#212 em análise</p><p>#213 aguardando</p><p class="ok">#211 aprovado</p></div>
+          <div class="shot"><h4>/whitelist</h4><p>login com Discord <span class="ok">ok</span></p><p>formulário enviado</p><div class="bar"><i style="width:66%"></i></div><p>análise 66%</p></div>
+          <div class="shot"><h4>resultado</h4><p>cargo liberado</p><p>aviso por DM</p><p class="ok">salvo no banco</p></div>
         </div>
         <div class="card-body">
-          <div class="card-top"><h3>TicketFlow</h3><span class="status">● em produção</span></div>
-          <p class="desc">Tickets de suporte com categorias, atribuição de equipe, transcript em PDF e painel administrativo integrado.</p>
-          <div class="chips"><span class="chip">discord.py</span><span class="chip">PostgreSQL</span><span class="chip">FastAPI</span></div>
+          <div class="card-top"><h3>DALLAS WL</h3><span class="status">● sistema</span></div>
+          <p class="desc">Sistema de whitelist com integração Discord, autenticação, painel de análise para a staff e armazenamento em banco de dados.</p>
+          <div class="chips"><span class="chip">Next.js</span><span class="chip">OAuth2 Discord</span><span class="chip">MongoDB</span><span class="chip">Node.js</span></div>
           <a class="link" href="#">ver repositório ↗</a>
         </div>
       </article>
 
-      <article class="card reveal" data-cat="eco">
+      <article class="card reveal" data-cat="bot">
         <div class="preview">
-          <div class="shot"><h4>ranking</h4><p>1. @lia · 9.4k</p><p>2. @duda · 7.1k</p><p class="ok">3. @theo · 6.8k</p></div>
-          <div class="shot"><h4>/loja</h4><p>espada de ferro · 250</p><p>poção · 40</p><div class="bar"><i style="width:35%"></i></div><p>saldo: 1.280 moedas</p></div>
-          <div class="shot"><h4>/inventario</h4><p>espada x1</p><p>poção x6</p><p class="ok">nível 12</p></div>
+          <div class="shot"><h4>tickets</h4><p>#0139 aberto</p><p>#0140 em andamento</p><p class="ok">#0141 fechado</p></div>
+          <div class="shot"><h4>/painel</h4><p>botões interativos</p><p>logs por canal</p><div class="bar"><i style="width:80%"></i></div><p>comandos 80%</p></div>
+          <div class="shot"><h4>logs de call</h4><p>entrou · #geral</p><p>saiu · #geral</p><p class="ok">salvo no log</p></div>
         </div>
         <div class="card-body">
-          <div class="card-top"><h3>EconomyRPG</h3><span class="status">● beta</span></div>
-          <p class="desc">Economia e RPG com inventário, loja de itens, ranking global entre servidores e comandos configuráveis por guild.</p>
-          <div class="chips"><span class="chip">Node.js</span><span class="chip">Redis</span><span class="chip">Slash Commands</span></div>
+          <div class="card-top"><h3>Bots Discord</h3><span class="status">● em uso</span></div>
+          <p class="desc">Comandos, painéis, sistemas de ticket, logs de calls e automações para o dia a dia de comunidades.</p>
+          <div class="chips"><span class="chip">discord.js</span><span class="chip">JavaScript</span><span class="chip">Node.js</span><span class="chip">MongoDB</span></div>
           <a class="link" href="#">ver repositório ↗</a>
         </div>
       </article>
 
-      <article class="card reveal" data-cat="util">
+      <article class="card reveal" data-cat="bot">
         <div class="preview">
-          <div class="shot"><h4>fila</h4><p>1. lo-fi beats</p><p>2. synthwave mix</p><p class="ok">3. jazz noturno</p></div>
-          <div class="shot"><h4>/tocar</h4><p>tocando agora</p><div class="bar"><i style="width:48%"></i></div><p>01:52 / 03:54</p><p class="ok">volume 70%</p></div>
-          <div class="shot"><h4>/playlist</h4><p>salva: estudo</p><p>24 faixas</p><p class="ok">compartilhada</p></div>
+          <div class="shot"><h4>ranking</h4><p>1. @membro1 · 980</p><p>2. @membro2 · 870</p><p class="ok">3. @membro3 · 790</p></div>
+          <div class="shot"><h4>/sortear</h4><p>10 jogadores</p><p>2 times de 5</p><div class="bar"><i style="width:100%"></i></div><p>equilibrado</p></div>
+          <div class="shot"><h4>/sorteio</h4><p>prêmio: cargo VIP</p><p>34 participantes</p><p class="ok">vencedor definido</p></div>
         </div>
         <div class="card-body">
-          <div class="card-top"><h3>MusicWave</h3><span class="status">● beta</span></div>
-          <p class="desc">Player de música com fila, playlists salvas por servidor e controles por botões direto na mensagem.</p>
-          <div class="chips"><span class="chip">TypeScript</span><span class="chip">Lavalink</span><span class="chip">Docker</span></div>
+          <div class="card-top"><h3>Ranking e Sorteios</h3><span class="status">● em uso</span></div>
+          <p class="desc">Ranking de membros, sorteio de times e sorteios com participação por botão, tudo configurável pelos admins do servidor.</p>
+          <div class="chips"><span class="chip">discord.js</span><span class="chip">TypeScript</span><span class="chip">Slash Commands</span></div>
           <a class="link" href="#">ver repositório ↗</a>
         </div>
       </article>
@@ -441,35 +455,44 @@
   <section id="stack" class="block wrap">
     <div class="head reveal">
       <span class="kicker">stack</span>
-      <h2>Do slash command ao deploy</h2>
-      <p class="lead">Linguagens, bibliotecas de bot, backend e infraestrutura que uso no dia a dia.</p>
+      <h2>Do front-end ao bot</h2>
+      <p class="lead">O que uso no dia a dia para montar sites, painéis e bots.</p>
     </div>
     <div class="skills">
-      <div class="skill reveal"><h3>linguagens</h3><div class="chips"><span class="chip">JavaScript</span><span class="chip">TypeScript</span><span class="chip">Python</span><span class="chip">SQL</span></div></div>
-      <div class="skill reveal"><h3>discord</h3><div class="chips"><span class="chip">discord.js</span><span class="chip">discord.py</span><span class="chip">Slash Commands</span><span class="chip">Interactions API</span><span class="chip">Webhooks</span></div></div>
-      <div class="skill reveal"><h3>backend</h3><div class="chips"><span class="chip">Node.js</span><span class="chip">Express</span><span class="chip">MongoDB</span><span class="chip">PostgreSQL</span><span class="chip">Redis</span><span class="chip">REST API</span></div></div>
-      <div class="skill reveal"><h3>infra</h3><div class="chips"><span class="chip">Docker</span><span class="chip">Git</span><span class="chip">VPS / Railway</span><span class="chip">PM2</span><span class="chip">CI/CD</span></div></div>
+      <div class="skill reveal"><h3>linguagens</h3><div class="chips"><span class="chip">JavaScript</span><span class="chip">TypeScript</span></div></div>
+      <div class="skill reveal"><h3>front-end</h3><div class="chips"><span class="chip">React</span><span class="chip">Next.js</span><span class="chip">HTML</span><span class="chip">CSS</span></div></div>
+      <div class="skill reveal"><h3>backend</h3><div class="chips"><span class="chip">Node.js</span><span class="chip">MongoDB</span><span class="chip">REST API</span><span class="chip">OAuth2 Discord</span></div></div>
+      <div class="skill reveal"><h3>discord & rp</h3><div class="chips"><span class="chip">discord.js</span><span class="chip">Slash Commands</span><span class="chip">Tickets</span><span class="chip">Whitelist</span><span class="chip">FiveM / RedM</span></div></div>
     </div>
   </section>
 
   <section id="processo" class="block wrap">
     <div class="head reveal">
       <span class="kicker">processo</span>
-      <h2>Como um bot sai do papel</h2>
+      <h2>Como um projeto sai do papel</h2>
       <p class="lead">Quatro etapas, sempre nessa ordem.</p>
     </div>
     <div class="steps reveal">
-      <div class="step"><small>etapa 1</small><h3>Briefing</h3><p>Conversamos sobre o servidor, o que o bot precisa fazer e quem vai usar.</p></div>
-      <div class="step"><small>etapa 2</small><h3>Desenvolvimento</h3><p>Comandos e banco de dados criados, com testes num servidor separado.</p></div>
-      <div class="step"><small>etapa 3</small><h3>Deploy</h3><p>Bot publicado em hospedagem estável, com logs e reinício automático.</p></div>
+      <div class="step"><small>etapa 1</small><h3>Briefing</h3><p>Conversamos sobre a comunidade, o que o projeto precisa fazer e quem vai usar.</p></div>
+      <div class="step"><small>etapa 2</small><h3>Desenvolvimento</h3><p>Telas, painel, comandos e banco de dados criados, com testes antes de ir ao ar.</p></div>
+      <div class="step"><small>etapa 3</small><h3>Deploy</h3><p>Projeto publicado em hospedagem estável, com logs e reinício automático.</p></div>
       <div class="step"><small>etapa 4</small><h3>Suporte</h3><p>Ajustes, novos comandos e correções depois da entrega.</p></div>
     </div>
+  </section>
+
+  <section id="github" class="block wrap" hidden>
+    <div class="head reveal">
+      <span class="kicker">github</span>
+      <h2>Repositórios recentes</h2>
+      <p class="lead">Carregados ao vivo do meu GitHub.</p>
+    </div>
+    <div class="repos" id="repos"></div>
   </section>
 
   <section id="contato" class="block wrap">
     <div class="contact reveal">
       <span class="kicker">contato</span>
-      <h2>Precisa de um bot para sua comunidade?</h2>
+      <h2>Tem um projeto para sua comunidade?</h2>
       <p class="lead">Aberto a freelas, parcerias e oportunidades. Me chame no Discord.</p>
       <div class="row">
         <button class="btn btn-ghost copy" type="button" id="copy" data-text="i.unloved">Copiar Discord: i.unloved</button>
@@ -481,7 +504,7 @@
 
 <footer>
   <div class="wrap foot">
-    <span>© 2026 silva-dev</span>
+    <span>© 2026 Luiz Paulo</span>
     <span>github.com/luizpauloteam-dot</span>
   </div>
 </footer>
@@ -521,7 +544,9 @@
   var scenes = [
     { cmd: '/ping', title: 'Pong!', desc: 'O bot está online e respondendo.', fields: [['LATÊNCIA','38ms'],['UPTIME','99.9%'],['VERSÃO','v2.4.0']] },
     { cmd: '/ban @spammer spam', title: 'Usuário banido', desc: 'A ação foi registrada no canal de logs.', fields: [['MOTIVO','spam'],['MODERADOR','você'],['LOG','#mod-logs']] },
-    { cmd: '/ticket abrir', title: 'Ticket #0142 criado', desc: 'A equipe de suporte foi avisada.', fields: [['CATEGORIA','suporte'],['PRIORIDADE','normal'],['RESPOSTA','~4 min']] }
+    { cmd: '/ticket abrir', title: 'Ticket #0142 criado', desc: 'A equipe de suporte foi avisada.', fields: [['CATEGORIA','suporte'],['PRIORIDADE','normal'],['RESPOSTA','~4 min']] },
+    { cmd: '/whitelist aprovar @membro', title: 'Whitelist aprovada', desc: 'Cargo liberado e aviso enviado por DM.', fields: [['STATUS','aprovado'],['ANALISTA','staff'],['LOG','#whitelist']] },
+    { cmd: '/sortear times 2', title: 'Times sorteados', desc: '10 jogadores divididos em 2 times.', fields: [['TIME A','5 jogadores'],['TIME B','5 jogadores'],['MODO','equilibrado']] }
   ];
   var typed = document.getElementById('typed');
   var embed = document.getElementById('embed');
@@ -530,9 +555,9 @@
   function renderEmbed(s){
     embed.innerHTML = '';
     var top = document.createElement('div'); top.className = 'embed-top';
-    var av = document.createElement('div'); av.className = 'avatar'; av.textContent = 'SN';
+    var av = document.createElement('div'); av.className = 'avatar'; av.textContent = 'LP';
     var nm = document.createElement('div'); nm.className = 'embed-name';
-    nm.textContent = 'SeuBot';
+    nm.textContent = 'LuizBot';
     var sm = document.createElement('small'); sm.textContent = 'aplicativo · bot';
     nm.appendChild(sm); top.appendChild(av); top.appendChild(nm);
     var t = document.createElement('div'); t.className = 'embed-title'; t.textContent = s.title;
@@ -570,7 +595,7 @@
   } else { play(); }
 
   /* ---- Faixa de tecnologias ---- */
-  var techs = ['discord.js','discord.py','TypeScript','Node.js','Python','MongoDB','PostgreSQL','Redis','Docker','FastAPI','Slash Commands','Webhooks'];
+  var techs = ['JavaScript','TypeScript','Node.js','Next.js','React','MongoDB','Discord.js','OAuth2 Discord','FiveM','RedM','Whitelist','Painel admin'];
   var marquee = document.getElementById('marquee');
   var track = document.getElementById('track');
   var COPIES = 4;                       // cópias da lista, para o loop nunca mostrar um buraco
@@ -720,6 +745,41 @@
       else { done(); }
     } catch(e){ done(); }
   });
+
+  /* ---- Barra de progresso de rolagem ---- */
+  var bar = document.getElementById('progress');
+  function updateProgress(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, window.scrollY / h) : 0) + ')';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  /* ---- Repositórios ao vivo (API pública do GitHub) ---- */
+  (function(){
+    var sec = document.getElementById('github');
+    var box = document.getElementById('repos');
+    if (!sec || !box || !window.fetch) return;
+    fetch('https://api.github.com/users/luizpauloteam-dot/repos?sort=updated&per_page=12')
+      .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(list){
+        list = list.filter(function(r){ return !r.fork && r.name !== 'luizpauloteam-dot'; }).slice(0, 6);
+        if (!list.length) return;
+        list.forEach(function(r){
+          var a = document.createElement('a'); a.className = 'repo reveal in'; a.href = r.html_url; a.target = '_blank'; a.rel = 'noopener';
+          var h = document.createElement('h3'); h.textContent = r.name;
+          var p = document.createElement('p'); p.textContent = r.description || 'Sem descrição.';
+          var m = document.createElement('div'); m.className = 'meta';
+          [r.language, '★ ' + r.stargazers_count, 'atualizado ' + new Date(r.pushed_at).toLocaleDateString('pt-BR')].forEach(function(t){
+            if (!t) return; var sp = document.createElement('span'); sp.textContent = t; m.appendChild(sp);
+          });
+          a.appendChild(h); a.appendChild(p); a.appendChild(m); box.appendChild(a);
+        });
+        sec.hidden = false;
+      })
+      .catch(function(){ /* sem internet ou limite da API: a seção continua escondida */ });
+  })();
 })();
 </script>
 </body>
