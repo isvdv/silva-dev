@@ -8,27 +8,45 @@ if (!token) {
   process.exit(1);
 }
 
-const res = await fetch('https://api.discloud.app/v2/app/all', {
-  headers: { 'api-token': token }
-});
-if (!res.ok) {
-  // Só o código HTTP vai para o log, nunca a resposta inteira.
-  console.error('A Discloud respondeu com erro HTTP ' + res.status + '. projetos.json não foi alterado.');
+const API = 'https://api.discloud.app/v2';
+async function get(path) {
+  const res = await fetch(API + path, { headers: { 'api-token': token } });
+  if (!res.ok) {
+    // Só o código HTTP vai para o log, nunca a resposta.
+    throw new Error('A Discloud respondeu ' + res.status + ' em ' + path);
+  }
+  const data = await res.json();
+  return Array.isArray(data.apps) ? data.apps : (data.apps ? [data.apps] : []);
+}
+
+let info;
+try {
+  info = await get('/app/all');
+} catch (e) {
+  console.error(e.message + '. projetos.json não foi alterado.');
   process.exit(1);
 }
 
-const data = await res.json();
-const apps = Array.isArray(data.apps) ? data.apps : (data.apps ? [data.apps] : []);
+// Status (desde quando está ligado). Memória/CPU ficam de fora: mudam toda hora e gerariam um commit por hora. Se falhar, segue só com as informações básicas.
+let status = [];
+try { status = await get('/app/all/status'); } catch (e) { console.error(e.message + ' (seguindo sem status)'); }
+const statusPorId = new Map(status.map(s => [String(s.id), s]));
 
-// Lista do que pode aparecer no site. ID, RAM, arquivo principal etc. ficam de fora.
-const publicos = apps
-  .map(a => ({
-    nome: String(a.name || 'app'),
-    online: a.online === true,
-    linguagem: a.lang ? String(a.lang) : null
-  }))
+const str = v => (v === undefined || v === null || v === '') ? null : String(v);
+
+// O que pode aparecer no site. ID, token, arquivo principal, logs etc. ficam de fora.
+const apps = info
+  .map(a => {
+    const s = statusPorId.get(String(a.id)) || {};
+    return {
+      nome: str(a.name) || 'app',
+      online: a.online === true,
+      linguagem: str(a.lang),
+      avatar: /^https:\/\//.test(a.avatarURL || '') ? a.avatarURL : null,
+      ligadoDesde: str(s.startedAt)
+    };
+  })
   .sort((a, b) => (b.online - a.online) || a.nome.localeCompare(b.nome));
 
-const out = { atualizadoEm: new Date().toISOString(), apps: publicos };
-await writeFile('projetos.json', JSON.stringify(out, null, 2) + '\n');
-console.log(publicos.length + ' app(s) gravado(s) em projetos.json.');
+await writeFile('projetos.json', JSON.stringify({ atualizadoEm: new Date().toISOString(), apps }, null, 2) + '\n');
+console.log(apps.length + ' app(s) gravado(s) em projetos.json.');
